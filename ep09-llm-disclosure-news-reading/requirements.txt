@@ -1,0 +1,7 @@
+# ASCII only: pip on Korean Windows reads this file as cp949 and fails on non-ASCII text.
+# Tested with Python 3.11, pandas 2.3.3, numpy 2.4.6, scipy 1.17.1, scikit-learn 1.9.0, kiwipiepy 0.24.1
+pandas>=2.0
+numpy>=1.24
+scipy>=1.10
+scikit-learn>=1.3
+kiwipiepy>=0.17

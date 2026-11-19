@@ -1,0 +1,6 @@
+﻿종목코드,회사명,연도,보고서,연결,통화,결산기준일,매출액_누적,영업이익_누적,순이익_누적,매출액_코드,영업이익_코드,순이익_코드
+FK9001,견본정기하나,2025,TQ,연결,KRW,2025-09-30,7108290995000,435950052000,86226520000,ifrs-full_Revenue,dart_OperatingIncomeLoss,ifrs-full_ProfitLoss
+FK9001,견본정기하나,2025,TQ,별도,KRW,2025-09-30,821423236000,476369837000,389243779000,ifrs-full_Revenue,dart_OperatingIncomeLoss,ifrs-full_ProfitLoss
+FK9001,견본정기하나,2024,TQ,연결,KRW,2024-09-30,6340292013000,488867490000,393049577000,ifrs-full_Revenue,dart_OperatingIncomeLoss,ifrs-full_ProfitLoss
+FK9001,견본정기하나,2024,TQ,별도,KRW,2024-09-30,2522133005000,236064292000,127895907000,ifrs-full_Revenue,dart_OperatingIncomeLoss,ifrs-full_ProfitLoss
+FK9002,견본정기두리,2025,FY,연결,KRW,2025-12-31,7399231850000,220915049000,-10949330000,ifrs-full_Revenue,dart_OperatingIncomeLoss,ifrs-full_ProfitLoss

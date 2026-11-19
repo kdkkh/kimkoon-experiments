@@ -1,0 +1,8 @@
+# ASCII only: pip on Korean Windows reads this file as cp949 and fails on non-ASCII text.
+# Tested with Python 3.11.
+pandas>=2.0
+numpy>=1.24
+requests>=2.31
+PyYAML>=6.0
+# tests only
+pytest>=7.0

@@ -1,0 +1,38 @@
+# 한국투자 KIS Open API 설정 예시 — 값은 모두 비어 있다.
+#
+# 쓰는 법
+#   1. 이 파일을 복사해 이름을 kis_devlp.yaml 로 바꾼다.
+#   2. 홈 폴더의 KIS/config/ 에 둔다 (윈도우: C 드라이브 사용자 폴더 아래 KIS\config\, 맥·리눅스: ~/KIS/config/).
+#      다른 곳에 두려면 환경변수 KIS_CONFIG_DIR 에 그 폴더를 적는다.
+#      ※ 이 실험 폴더(저장소) 안에는 두지 않는다 — 실수로 함께 올라가기 쉽다.
+#   3. 아래 값을 채운다. 한국투자증권 KIS Developers 에서 앱키를 신청하면 실전용·모의투자용 앱키/시크릿을 따로 받는다.
+#   4. 공식 예제 저장소(github.com/koreainvestment/open-trading-api)의 kis_devlp.yaml 을 이미 쓰고 있다면 그 파일을 그대로 써도 된다.
+#      이 프로그램은 아래 키만 읽는다.
+#
+# 이 프로그램이 어느 키를 쓰나
+#   - 모의 주문(--paper-order)          : paper_app, paper_sec, my_paper_stock, my_prod, vps
+#   - 시세 조회(기본 --mode real / --data-mode real, 조회만): my_app, my_sec, my_acct_stock, my_prod, prod
+#     모의 키로만 조회하려면 --mode paper / --data-mode paper (과거 분봉은 공식 목록상 모의 미지원)
+#   - 네트워크 없는 견본 실행(--csv sample_data/...)과 pytest 는 이 파일이 없어도 돈다.
+
+# 실전 앱키·시크릿 (이 프로그램은 시세 조회에만 씀)
+my_app: ""
+my_sec: ""
+
+# 모의투자 앱키·시크릿
+paper_app: ""
+paper_sec: ""
+
+# 계좌번호 앞 8자리 (실전 / 모의)
+my_acct_stock: ""
+my_paper_stock: ""
+
+# 계좌번호 뒤 2자리 (종합계좌는 보통 01)
+my_prod: ""
+
+# REST 주소 — 공식 예제 저장소의 kis_devlp.yaml 또는 KIS Developers 안내에 적힌 실전(prod)·모의(vps) 주소를 그대로 적는다
+prod: ""
+vps: ""
+
+# 요청 헤더 User-Agent (비워 두면 기본값)
+my_agent: ""

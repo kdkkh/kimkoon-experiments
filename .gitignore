@@ -1,0 +1,21 @@
+# 각 저장소 맨 위에 .gitignore 로 복사해 쓴다
+.env
+.env.*
+!.env.example
+*.yaml.local
+kis_devlp.yaml
+opendart.yaml
+token*.json
+*.log
+logs/
+data/
+!sample_data/
+*.parquet
+*.db
+*.sqlite
+__pycache__/
+.venv/
+node_modules/
+
+.pytest_cache/
+tk_*.json
