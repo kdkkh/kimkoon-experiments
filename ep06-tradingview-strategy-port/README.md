@@ -101,3 +101,12 @@ python -X utf8 scripts/strategy_live.py --codes <종목코드> --strategy supert
 - "이 폴더의 `AGENTS.md` 와 `README.md` 를 읽고, 네트워크 없이 `pytest` 와 `sample_data` 견본 실행을 돌려서 결과를 알려 줘. 설정 파일이나 주문은 건드리지 마."
 - "`strategy/PORTING_PROMPT.md` 의 한국어 프롬프트대로 아래 Pine 전략을 `strategy/ported/my_strategy.py` 로 옮기고, `scripts/strategy_validate.py` 로 검증해서 '통과'가 나올 때까지 고쳐 줘. (Pine 소스 붙여 넣기)"
 - "내 프로그램에 `strategy/indicators.py` 의 `supertrend` 와 `strategy/backtest.py` 의 체결 규칙만 가져가고 싶어. 두 파일이 기대는 것(`strategy/base.py`, `kis/order.py` 의 `tick_size`)까지 포함해 필요한 부분만 골라 옮겨 줘."
+
+## 부품을 떼어 갈 때
+
+- `strategy/indicators.py` 는 pandas · numpy 만 쓴다. 혼자 떼어 가도 된다.
+- `strategy/backtest.py` 는 `kis.order` 에서 `tick_size` 하나만 쓰는데, 그 import 가 `kis/` 전체(`requests` · `PyYAML`)를 끌어온다. 백테스트만 가져갈 때는 `tick_size`(순수 함수 몇 줄)를 복사해 import 를 바꾸면 `kis/` 가 필요 없다.
+- `kis/config.py` 는 import 될 때 표준 출력을 UTF-8 로 바꾼다(윈도우 한글 깨짐 방지). 다른 프로그램에 넣을 때 알아 둘 것.
+- 전략 파일은 `from strategy.base import …` 처럼 패키지 이름 `strategy` 에 맞춰 쓴다. 폴더 이름을 바꾸면 import 도 같이 바꾼다.
+- 봉 CSV 의 `time` 은 `2024-01-02T00:00:00+09:00` 꼴(시간대가 없으면 한국 시간으로 읽는다). 실시간 실행기는 PC 시계가 한국 시간이라고 가정한다.
+- 옮긴 전략 파일 이름은 `<이름>_strategy.py`, 실행할 때는 `--strategy <이름>`(클래스의 `name`). 파라미터는 `--param 이름=값` 을 여러 번.

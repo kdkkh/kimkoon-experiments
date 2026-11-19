@@ -131,7 +131,7 @@ def static_check(path: Path, rep: Report):
     if unknown_ta:
         rep.warn(f"대응표 밖 지표 함수: {', '.join(sorted(unknown_ta))} → 파일 끝 '미지원' 표에 적고 직접 구현했는지 확인")
     else:
-        rep.ok(f"지표 함수는 모두 대응표 안({', '.join(sorted(ALLOWED_TA))})" if ta_alias else "indicators 를 쓰지 않음")
+        rep.ok(f"지표 함수는 모두 대응표 안(허용 목록: {', '.join(sorted(ALLOWED_TA))})" if ta_alias else "indicators 를 쓰지 않음")
     if sus:
         rep.warn(f"의심스러운 호출: {', '.join(sorted(sus))}")
     if "자기 점검 표" not in src:
@@ -392,4 +392,7 @@ def validate(target: str, bars: pd.DataFrame | None = None, params: dict | None 
                 compare_trades(r.trades, tv, use_bars, use_sig, rep, bool(daily), tf_minutes, wb)
             except Exception as e:
                 rep.fail(f"대조 실패: {type(e).__name__}: {e}")
+    else:
+        rep.head("④ 트레이딩뷰 거래 목록 대조")
+        rep.info("건너뜀(--tv-trades 없음) — 이 판정은 규격·금지·실행 확인까지다. 트레이딩뷰와 같은 결과라는 뜻이 아니다")
     return rep

@@ -59,7 +59,7 @@ pip install -r requirements.txt
 python -X utf8 scripts/ep09_offline_check.py
 ```
 
-`ep09_offline_check.py` 가 하는 일: 가짜 작업 공간(`data/`)을 만들고 → 1~5단계의 표본·과제·프롬프트 해시를 만들고 → 각 실행기(`ep09_run*.py`)를 **가짜 답**으로 돌리고(실행기의 `call_claude` 하나만 바꿔 끼움, 외부 명령은 막아 둠) → 채점·집계·원문 대조 자료까지 28걸음을 차례로 돈다. 걸음마다 통과/실패를 찍고, 하나라도 실패하면 멈춘다. 가짜 답이라 숫자에는 뜻이 없다. 다른 곳에 만들려면 `--data <빈 폴더>`.
+`ep09_offline_check.py` 가 하는 일: 가짜 작업 공간(`data/`)을 만들고 → 1~5단계의 표본·과제·프롬프트 해시를 만들고 → 각 실행기(`ep09_run*.py`)를 **가짜 답**으로 돌리고(실행기의 `call_claude` 하나만 바꿔 끼움, 외부 명령은 막아 둠) → 채점·집계·원문 대조 자료까지 28걸음을 차례로 돈다. 걸음마다 통과/실패를 찍고, 하나라도 실패하면 멈춘다. 가짜 답이라 숫자에는 뜻이 없다. 다른 곳에 만들려면 `--data <빈 폴더>`. 3~5분 걸리고(4단계 채점·집계 한 걸음이 2~3분), 출력은 걸음이 끝날 때마다 한 줄씩 찍힌다.
 
 **주의**: 가짜 검사는 다시 돌릴 때 가짜 작업 공간을 통째로 지우고 새로 만든다. 기본 자리(`data/`)는 5절에서 실제 자료를 두는 자리와 같으니, **자기 자료를 넣을 때는 가짜 작업 공간과 다른 폴더를 쓰거나(`--data`), 가짜 `data/` 를 먼저 지우고 시작한다.** 가짜 규칙을 벗어난 원문 zip 이 보이면 생성기가 지우지 않고 멈추지만, 그 검사에만 기대지 않는다.
 
@@ -84,7 +84,7 @@ python -X utf8 scripts/ep09_offline_check.py
 |---|---|---|---|
 | `ep09_sample.py` 표본·정답표 | 구조화 CSV 19종 · 원문 zip · events.csv · 종목 이름표 | `sample_A.csv` · `sample_A_정답.csv` · `sample_A_칸정의.csv` · `sample_B.csv` · `표본_깔때기.md` | `ep09_sample.py` |
 | `ep09_run.py` 프롬프트·실행기 | 위 표본 | `prompt_A.txt` · `prompt_B.txt` · `run/A_run<N>.jsonl` · `run/B_run<N>.jsonl` · `run/답_*.jsonl` · `run/B_묶음.json` · `run/C_표본.json` · `run/집계.md` | `ep09_run.py prompts` · `a --run 1` · `b --run 1` · `stats` · `show-a <접수번호>` · `show-b <묶음>` · **`ping`·`a`·`b` 는 모델을 부른다** |
-| `ep09_grade.py` 채점기 | 답 파일(JSONL·CSV) + 정답표 | `채점/<이름>_A_*.csv·md` · `_B_*` · `자체시험/` | `ep09_grade.py selftest` · `a --answers <답.jsonl> --name <이름>` · `b …` |
+| `ep09_grade.py` 채점기 | 답 파일(JSONL·CSV) + 정답표 | `채점/<이름>_A_*.csv·md` · `_B_*` · `자체시험/` | `ep09_grade.py selftest` · `a --answers <답.jsonl> --name <이름> [--key <정답.csv>]` · `b …`(채점기의 `a`·`b` 는 모델을 부르지 않는다 — 실행기 `ep09_run.py a|b` 와 다르다) |
 
 ### 3단계(읽기 · 방향)
 
@@ -199,6 +199,27 @@ python -X utf8 scripts/ep09_offline_check.py
 - 「`scripts/ep09_grade.py` 의 숫자·날짜 정규화(`parse_num` · `parse_date` · `grade_cell`)와 자체 시험만 떼어 내 내 프로젝트의 채점기로 옮겨 줘.」
 - 「내가 OpenDART 에서 받은 원문 zip 과 구조화 CSV 를 README 5절의 자리에 두었어. `ep09_sample.py` → `ep09_tasks3.py build` → `ep09_run3.py prompts` 까지만 돌리고, 모델을 부르기 전에 과제별 호출 수를 `프롬프트_해시_사전.csv` 로 세어 줘.」
 
-## 11. 필요한 것
+## 11. 부품을 떼어 갈 때 (채점기를 다른 자료에 쓰기)
+
+공시가 아닌 글(계약서 · 보고서 등)에서 "정해진 칸 값을 모델이 얼마나 정확히 읽나"를 잴 때는 `scripts/ep09_grade.py` 의 함수만 가져가면 된다.
+
+- **필요한 파일**: `ep09_grade.py` + `ep09_paths.py`(import 때 함께 읽힌다) + pandas. 다른 스크립트는 필요 없다.
+- **import 할 때 알아 둘 것**: `ep09_paths` 는 `sys.argv` 에서 `--data <폴더>` 를 떼어 낸다(자기 프로그램이 같은 이름의 옵션을 쓰면 겹친다).
+- **함수**(모두 모델 · 네트워크를 쓰지 않는다)
+
+| 함수 | 받는 것 | 내놓는 것 |
+|---|---|---|
+| `is_blank(v)` | 답 값 | 답이 없는 것으로 볼지(bool) |
+| `parse_num(v)` | 숫자 · "1,234" · "12억" 같은 글 | `Decimal` 또는 None(못 읽음) |
+| `parse_date(v)` | 날짜 글 | `(YYYYMMDD 또는 None, 두 자리 연도였나)` |
+| `grade_cell(tp, unit, truth, ans, present)` | `tp` = `num`·`date`·`enum` · `unit` = 단위 글(`%`·`%p` 는 관용 기준이 다름) · `truth` = 정규화한 정답(num 은 소수 문자열, date 는 YYYYMMDD) · `ans` = 모델 답 · `present` = 답에 그 칸이 있었나 | dict: `엄격`·`관용`(정답/오답/답없음) · `자릿수일치` · `부호일치` · `오답갈래` · `답_정규` · `배수_k` |
+| `grade_empty(tp, ans, present)` | 정답이 **빈 칸**인 칸의 답 | `비움` / `0 채움` / `값 채움`(= 지어내기) |
+| `wilson(k, n)` | 맞은 수 · 전체 수 | 95% 구간 `(아래, 위)` |
+
+- **정답표 형식**(`data/ep09/sample_A_정답.csv` — 1단계 `ep09_sample.py` 가 만든다. 자기 정답표를 이 열로 만들면 `ep09_grade.py a --key <정답.csv>` 로 그대로 채점된다): `kind`(문서 종류) · `rcept_no`(문서 id) · `칸`(칸 이름) · `질문이름`(사람이 읽는 이름) · `형`(num/date/enum) · `단위` · `원값`(원문 글자 그대로) · `정답`(정규화한 값) · `상태`(값/빈칸/해석불가) · `원문확인`.
+- **답 파일 형식**: 한 줄에 `{"rcept_no": "<문서 id>", "answer": {"<칸 또는 질문이름>": 값}}`. 문서 id 열쇠 이름이 `rcept_no` 로 고정이라, 다른 이름을 쓰려면 읽는 부분(`load_answers_a`)만 새로 쓴다.
+- 쓰는 예는 `ep09_grade.py selftest` 와 파일 끝의 자체 시험 값에 있다.
+
+## 12. 필요한 것
 
 `requirements.txt`(pandas · numpy · scipy · scikit-learn · kiwipiepy). 실제로 모델을 부를 때만 Claude Code(`claude` 명령)와 구독이 필요하다. 라이선스는 MIT(저장소 맨 위 `LICENSE`).

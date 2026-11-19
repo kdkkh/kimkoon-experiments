@@ -21,10 +21,10 @@
 
 1. **Pine 복사** — 트레이딩뷰 Pine 편집기에서 전략 소스를 처음부터 끝까지 전부 복사.
 2. **AI 에 붙여 넣기** — `strategy/PORTING_PROMPT.md` 의 "붙여 넣을 프롬프트" 전체 + Pine 소스를 쓰는 AI(각 AI 의 가장 강한 모델)에 붙여 넣는다.
-3. **저장** — AI 가 준 파이썬 파일을 `strategy/ported/<이름>.py` 로.
-4. **검증기** — `python -X utf8 scripts/strategy_validate.py strategy/ported/<이름>.py`
+3. **저장** — AI 가 준 파이썬 파일을 `strategy/ported/<이름>_strategy.py` 로(클래스의 `name = "<이름>"` — 아래 `--strategy <이름>` 에 쓰는 값. 파일 이름으로도 찾아진다).
+4. **검증기** — `python -X utf8 scripts/strategy_validate.py strategy/ported/<이름>_strategy.py`
    트레이딩뷰 거래 목록을 내보냈으면 `--code <종목코드> --tf 1d --days 365 --tv-trades 거래목록.csv` 까지.
-5. **통과한 파일만** 다음으로. **AI 마다 결과가 다를 수 있으니 검증기를 통과한 파일만 쓴다.** "경고"면 검증기가 보여 준 첫 갈라진 거래·앞뒤 봉 값을 AI 에 그대로 주고 고치게 한 뒤 다시 4.
+5. **통과한 파일만** 다음으로. 거래 목록 없이 나온 '통과'는 규격·금지·실행 확인까지다 — 트레이딩뷰와 같은지는 거래 목록을 넣어야 확인된다. **AI 마다 결과가 다를 수 있으니 검증기를 통과한 파일만 쓴다.** "경고"면 검증기가 보여 준 첫 갈라진 거래·앞뒤 봉 값을 AI 에 그대로 주고 고치게 한 뒤 다시 4.
 6. **백테스트 표 보기** — `python -X utf8 scripts/strategy_backtest.py --code <종목코드> --tf 1d --days 365 --strategy <이름> --dump`
 7. **실시간 dry-run** — `python -X utf8 scripts/strategy_live.py --codes <종목코드> --strategy <이름>` (주문 계획만 찍힘)
 8. **모의 주문** — 위에 `--paper-order` (모의 계좌로만. 실전 주문 경로는 없다)

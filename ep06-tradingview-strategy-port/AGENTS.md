@@ -11,8 +11,14 @@
    실전 주문 경로는 없다 — 새로 만들지 않는다(`kis/order.py` 의 `check` 가 모의 설정이 아니면 거절).
 2. **설정·토큰을 열거나 출력하지 않는다.** `~/KIS/config/kis_devlp.yaml`(또는 `KIS_CONFIG_DIR`), `tk_v.json`·`tk_p.json`.
    설정이 맞는지만 보려면 `python -X utf8 -c "from kis import config; print(config.status())"` (키별 채워짐 여부만 나옴).
+   설정 파일이 아직 없으면 이 명령은 `FileNotFoundError` 로 끝난다 — 정상이다. 견본 실행과 pytest 에는 설정이 필요 없다.
 3. **네트워크 없이 먼저 확인한다.** `python -X utf8 -m pytest tests -q` 와 `sample_data/` 견본 실행은 설정·네트워크 없이 돈다.
 4. 옮긴 전략은 `strategy/PORTING_PROMPT.md` 규격으로, **검증기 판정이 '통과'인 파일만** 쓴다.
+   - 옮기는 일의 시작점은 `strategy/README.md` 의 "Pine 전략 하나를 옮기는 순서" → `strategy/PORTING_PROMPT.md`(대응표·템플릿) → 예시 `strategy/ported/supertrend_strategy.py`.
+   - 파일은 `strategy/ported/<이름>_strategy.py`, 클래스의 `name = "<이름>"`. `--strategy <이름>` 은 클래스 `name` 으로도, 파일 이름(확장자 뺀 것)으로도 찾는다(`strategy/ported/__init__.py`).
+   - **트레이딩뷰 거래 목록(`--tv-trades`) 없이 나온 '통과'는 규격·금지 import·실행 확인까지다.** 지표 값·신호가 트레이딩뷰와 같다는 뜻이 아니다. 사용자에게 보고할 때 "트레이딩뷰 대조 안 함"을 밝힌다.
+   - `sample_data/fake_tv_trades.csv` 는 Supertrend 전용 견본이다. 다른 전략에 넣으면 '실패'가 나오는 것이 정상이다.
+   - dry-run(`strategy_live.py`)도 시세 조회는 실제로 나간다 → 설정 파일이 필요하다. 설정 없이 되는 것은 `--csv` 견본 실행과 pytest 뿐이다.
 5. 종목을 고르거나 권하지 않는다. 종목코드는 사용자가 준 값만 쓴다.
 
 ## 지도 (파일 → 하는 일 → 입력 → 출력)
