@@ -14,6 +14,8 @@
 
 정리되는 편부터 폴더가 늘어납니다.
 
+시리즈에서 만든 매매 프로그램(무료 버전)은 따로 있습니다: https://github.com/kdkkh/kimkoon-trader — 소개 영상 10편 https://youtu.be/GGLhbhscKjQ
+
 ## 쓰는 법
 
 - 폴더마다 **그 폴더만 떼어 가도 돌아가게** 만들었습니다(다른 폴더에 기대지 않음). 각 폴더의 `README.md` 에 실행 명령이, `AGENTS.md` 에 AI(에이전트)에게 읽히기 위한 지도가 있습니다.
